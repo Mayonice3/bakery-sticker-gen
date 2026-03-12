@@ -22,29 +22,29 @@ with st.form("sticker_form"):
     total_qty = st.number_input("Total Quantity", min_value=0, value=702)
     
     # Allows selecting multiple non-consecutive dates
-    selected_dates = st.multiselect(
+    selected_dates = st.date_input(
         "Select Production Dates",
-        options=[(datetime.now() + timedelta(days=x)).date() for x in range(10)],
-        format_func=lambda x: x.strftime("%d/%m/%y")
+        value=[],  # Starts empty
+        help="Select all dates that apply for this production run."
     )
     
     start_batch = st.number_input("Starting Batch Number", min_value=1, value=63)
     submit = st.form_submit_button("Generate Stickers")
 
-# 3. Logic & Output
 if submit:
     if not selected_dates:
-        st.error("Please select at least one date.")
+        st.error("Please select at least one date from the calendar.")
     else:
         params = item_params[item_name]
+        # selected_dates returns a list when multiple are picked
         daily_qty = round(total_qty / len(selected_dates), 1)
         
-        st.divider()
-        for i, mfd_date in enumerate(selected_dates):
+        st.subheader(f"Stickers for {item_name}")
+        for i, mfd_date in enumerate(sorted(selected_dates)):
             exp_date = mfd_date + timedelta(days=params["shelf_life"])
             batch_num = str(start_batch + i).zfill(4)
             
-            # This mimics your sticker layout
+            # Displaying in a clean, copyable block
             st.code(f"""
 {item_name}
 MFD: {mfd_date.strftime('%d/%m/%y')}
