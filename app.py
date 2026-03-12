@@ -52,5 +52,5 @@ EXP: {exp_date.strftime('%d/%m/%y')}
 {params['storage']}
 Batch: {batch_num}
 
-{daily_qty}
+No of Stickers: {daily_qty}
             """)
